@@ -1,0 +1,47 @@
+CREATE PROCEDURE updateuserinfo 
+	(IN p_firstname varchar(50),
+	 IN p_lname varchar(50),
+	 IN p_gender varchar(10), 
+	 IN p_address varchar(100), 
+	 IN p_city varchar(20), 
+	 IN p_state varchar(20),
+	 IN p_zip varchar(10),
+	 IN p_userid INT)
+BEGIN
+	DECLARE exit handler for sqlexception
+	BEGIN
+		-- ERROR
+		ROLLBACK;
+	END;
+		IF EXISTS (SELECT * FROM User WHERE UserId=p_userid) THEN
+		BEGIN
+			START TRANSACTION;
+				IF p_firstname IS NOT NULL THEN
+					UPDATE User SET fname=p_firstname WHERE UserId=p_userid;
+				END IF
+				IF p_lname IS NOT NULL THEN
+					UPDATE User SET lname=p_lname WHERE UserId=p_userid;
+				END IF
+				IF p_gender IS NOT NULL THEN
+					UPDATE User SET gender=p_gender WHERE UserId=p_userid;
+				END IF
+				IF p_address IS NOT NULL THEN
+					UPDATE User SET address=p_address WHERE UserId=p_userid;
+				END IF
+				IF p_city IS NOT NULL THEN
+					UPDATE User SET city=p_city WHERE UserId=p_userid;
+				END IF
+				IF p_state IS NOT NULL THEN
+					UPDATE User SET state=p_state WHERE UserId=p_userid;
+				END IF
+				IF p_zip IS NOT NULL THEN
+					UPDATE User SET zip=p_zip WHERE UserId=p_userid;
+				END IF			
+			COMMIT;
+		END
+	ELSE
+		BEGIN
+			insert into User (fname,lname,gender,address,city,state,zip) values (p_firstname, p_lname, p_gender, p_address, p_city, p_state, p_zip);
+		END
+	END IF
+END

@@ -1,0 +1,13 @@
+CREATE PROCEDURE createappointment 
+	(IN p_doctor varchar(50),
+	 IN p_userid INT, 
+	 IN p_location varchar(50), 
+	 IN p_date DATE, 
+	 IN p_time TIME)
+BEGIN
+		DECLARE @locid INT;
+		DECLARE @docid INT;
+		SET @docid = (SELECT DoctorId FROM Doctor WHERE concat(fName,' ',lName) = p_doctor );
+		SET @locid=(SELECT LocationId FROM Location WHERE Address=p_location);
+		insert into Appointments (UserId,DoctorId,LocationId,Date,Time) values (p_userid, @docid, @locid, p_date, p_time);
+END
